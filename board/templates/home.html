@@ -300,12 +300,10 @@ footer img:focus , footer a:focus { outline: none; }
     <form method="POST" action="{% url 'login' %}">
         {% csrf_token %}
         <div class="group">
-            <input type="text" name="username"><span class="highlight"></span><span class="bar"></span>
-            <label>Username</label>
+            <input type="text" name="username" placeholder="username"><span class="highlight"></span><span class="bar"></span>
         </div>
         <div class="group">
-            <input type="password" name="password"><span class="highlight"></span><span class="bar"></span>
-            <label>Password</label>
+            <input type="password" name="password" placeholder="password"><span class="highlight"></span><span class="bar"></span>
         </div>
         <button type="submit" class="button buttonBlue">Login !
             <div class="ripples"><span class="ripplesCircle"></span></div>

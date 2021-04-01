@@ -79,7 +79,7 @@ form {
 
 .group { 
 	position: relative; 
-	margin-bottom: 45px; 
+	margin-bottom: 40px; 
 }
 
 input {
@@ -103,7 +103,7 @@ input:focus { outline: none; }
 label {
 	color: #999; 
 	font-size: 18px;
-	font-weight: normal;
+	{% comment %} font-weight: normal; {% endcomment %}
 	position: absolute;
 	pointer-events: none;
 	left: 5px;
@@ -114,12 +114,12 @@ label {
 
 /* active */
 
-input:focus ~ label, input.used ~ label {
+{% comment %} input:focus ~ label, input.used ~ label {
 	top: -20px;
     transform: scale(.75); left: -2px;
 	/* font-size: 14px; */
 	color: #4a89dc;
-}
+} {% endcomment %}
 
 
 /* Underline */
@@ -151,23 +151,6 @@ input:focus ~ .bar:before, input:focus ~ .bar:after { width: 50%; }
 
 
 /* Highlight */
-
-.highlight {
-	position: absolute;
-	height: 60%; 
-	width: 100px; 
-	top: 25%; 
-	left: 0;
-	pointer-events: none;
-	opacity: 0.5;
-}
-
-
-/* active */
-
-input:focus ~ .highlight {
-	animation: inputHighlighter 0.3s ease;
-}
 
 
 /* Animations */
@@ -300,17 +283,32 @@ footer img:focus , footer a:focus { outline: none; }
     <form method="POST" action="{% url 'signup' %}">
     {% csrf_token %}
         <div class="group">
-            <input type="text" name="username"><span class="highlight"></span><span class="bar"></span>
-            <label>Username</label>
+            <input type="text" name="username" required placeholder="Name"><span class="highlight"></span><span class="bar"></span>
         </div>
         <div class="group">
-            <input type="password" name="password"><span class="highlight"></span><span class="bar"></span>
-            <label>Password</label>
+            <input type="text" name="contact" required placeholder="Contact"><span class="highlight"></span><span class="bar"></span>
         </div>
         <div class="group">
-            <input type="password" name="passwordagain"><span class="highlight"></span><span class="bar"></span>
-            <label>Confirm Password</label>
+            <input type="email" name="email" required placeholder="email"><span class="highlight"></span><span class="bar"></span>
+            
         </div>
+        <div class="group">
+            <input type="text" name="institute" required placeholder="Institute"><span class="highlight"></span><span class="bar"></span>
+            
+        </div>
+        <div class="group">
+            <input type="text" name="Name" required placeholder="Username"><span class="highlightt"></span><span class="bar"></span>
+            
+        </div>
+        <div class="group">
+            <input type="password" name="password" required placeholder="password"><span class="highlightt"></span><span class="bar"></span>
+            
+        </div>
+        <div class="group">
+            <input type="password" name="passwordagain" required placeholder="passwordagain"><span class="highlightt"></span><span class="bar"></span>
+            
+        </div>
+        
         <button type="submit" class="button buttonBlue">Register !!
             <div class="ripples"><span class="ripplesCircle"></span></div>
         </button>

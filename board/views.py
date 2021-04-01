@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import auth
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from django.contrib.auth.models import User
 from .models import *
 
 
@@ -25,6 +25,7 @@ def updateTask(request, pk):
 @login_required(login_url="login")
 def home(request):
     user = User.objects.get(id=request.user.id)
+    newuser = NewUser.objects.filter(user=user)
 
     if len(Task.objects.filter(user=user)) == 0 :
         all_users = User.objects.all()
@@ -56,10 +57,23 @@ def home(request):
     return render(request, "index.html", context)
 
 
+@login_required(login_url="login")
+def go(request):
+    if helptext.objects.all().exists():
+        help_obj = helptext.objects.all()
+        return render(request,"help.html",{'text':help_obj[0].text})
+    else:
+        return render(request,"help.html",{"text":"Error No message"})
+
+
 def signup(request):
     if request.method == "POST":
         # fetching the name of the user
         name = request.POST["username"]
+        institute = request.POST["institute"]
+        contact = request.POST["contact"]
+        email = request.POST["email"]
+        name = request.POST['Name']
         if request.POST["password"] == request.POST["passwordagain"]:
             # if passwords matched check if user exist previously or not
             try:
@@ -73,8 +87,11 @@ def signup(request):
             except User.DoesNotExist:
                 # create a user and redirect to home
                 user = User.objects.create_user(
-                    username=name, password=request.POST["password"]
+                    username=name, password=request.POST["password"],email=email,first_name=name
                 )
+                user.save()
+                newuser = NewUser(institute_name=institute,contact=contact,user=user)
+                newuser.save()
                 return redirect(home)
         else:
             return render(
@@ -87,12 +104,18 @@ def login(request):
     if request.method == "POST":
         name = request.POST["username"]
         pas = request.POST["password"]
-        user = auth.authenticate(username=name, password=pas)
+        user = authenticate(request,username=name,password=pas)
+        print(user)
 
         # checking if user exist and credentials are correct
         if user is not None:
-            auth.login(request, user)
-            return redirect(home)
+            if user.is_staff:
+                auth.login(request, user)
+                print(user, request )
+                return redirect(home)
+                # return render(request, "index.html")
+            else:
+                return render(request, "home.html", {"error": "You are not allowed to login, Please ask admin"})
         else:
             return render(request, "home.html", {"error": "Invalid Credentials"})
     else:

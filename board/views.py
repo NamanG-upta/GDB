@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import *
+import os
 
 
 @login_required(login_url="login")
@@ -20,6 +21,18 @@ def updateTask(request, pk):
         return redirect(home)
 
     return render(request, 'update_task.html', {'task':task} )
+
+
+@login_required(login_url="login")
+def startbtn(request):
+    os.system('cmd /k "dir"')
+    return redirect(home)
+
+
+@login_required(login_url="login")
+def stopbtn(request):
+    os.system('cmd /k "exit()"')
+    return redirect(home)
 
 
 @login_required(login_url="login")
@@ -59,11 +72,7 @@ def home(request):
 
 @login_required(login_url="login")
 def go(request):
-    if helptext.objects.all().exists():
-        help_obj = helptext.objects.all()
-        return render(request,"help.html",{'text':help_obj[0].text})
-    else:
-        return render(request,"help.html",{"text":"Error No message"})
+    return render(request,"help.html")
 
 
 def signup(request):

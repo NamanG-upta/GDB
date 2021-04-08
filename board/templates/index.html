@@ -120,11 +120,31 @@
                 align-items: right;
             }
 
+            .stbtn{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+             #start{
+                padding: 12px 21px;
+                margin: 5px 35px;
+            }
+
+            #stop{
+                 padding: 12px 21px;
+            } 
+
+
         </style>
     </head>
-<body>
+<body >
     <a class="logout" href="{% url 'logout' %}">Logout</a>
     <a class="help" href="{% url 'help' %}">Help</a>
+
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLy3cfwMYfs3aBywcNfiukc8hJm0_ytbLCkQ&usqp=CAU">
+
+
     <div class="todo-list">
 
         {% for task in tasks %}
@@ -132,6 +152,16 @@
                 <div class="card-body">
                     <h5 class="card-title">{{task.title}}</h5>
                     <p class="card-text">{{task.desc}}</p>
+                        <div class="stbtn">
+                            <form method="POST" action="{% url 'startbtn' %}">
+                                {% csrf_token %}
+                                <button id="start" type="submit" class="btn btn-outline-success">Start</button>
+                            </form>
+                            <form method="POST" action="{% url 'stopbtn' %}">
+                                {% csrf_token %}
+                                <button id="stop" type="submit" class="btn btn-outline-danger">Stop</button>
+                            </form>
+                        </div>
                     <a class="btn btn-outline-primary" href="{% url 'update_task' task.id %}">INFO</a>
                 </div>
 

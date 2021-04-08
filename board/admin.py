@@ -11,7 +11,6 @@ class NewUseradmin(admin.ModelAdmin):
 
 admin.site.register(NewUser,NewUseradmin)
 
-admin.site.register(helptext)
 
 class TaskAdmin(admin.ModelAdmin):
     list_display = (

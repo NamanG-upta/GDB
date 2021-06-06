@@ -24,13 +24,25 @@ def updateTask(request, pk):
 
 
 @login_required(login_url="login")
-def startbtn(request):
-    os.system('cmd /k "dir"')
+def startbtn(request,pk,id):
+    print("idsssssssss = ", pk, id)
+    user = User.objects.get(id=id)
+    task = Task.objects.get(id=pk,user=user)
+    task.working = True
+    task.save()
+    # os.system('cmd /k "dir"')
+    os.system('cmd /k "cd c:\ST\STM32CubeIDE_1.6.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_1.6.0.202101291314\tools\bin&&ST-LINK_gdbserver.exe -d -v -cp "c:\ST\STM32CubeIDE_1.6.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_1.6.0.202101291314\tools\bin""')
+
+
     return redirect(home)
 
 
 @login_required(login_url="login")
-def stopbtn(request):
+def stopbtn(request, pk,id):
+    user = User.objects.get(id=id)
+    task = Task.objects.get(id=pk,user=user)
+    task.working = False
+    task.save()
     os.system('cmd /k "exit()"')
     return redirect(home)
 
@@ -38,16 +50,9 @@ def stopbtn(request):
 @login_required(login_url="login")
 def home(request):
     user = User.objects.get(id=request.user.id)
-    newuser = NewUser.objects.filter(user=user)
 
     if len(Task.objects.filter(user=user)) == 0 :
-        all_users = User.objects.all()
-        admin_usr = -1
-
-        for curr_user in all_users:
-            if curr_user.is_superuser:
-                admin_usr = curr_user
-        
+        admin_usr = User.objects.filter(is_superuser=True).first()
         tasks = Task.objects.filter(user=admin_usr)
 
         for curr_task in tasks:
@@ -55,6 +60,7 @@ def home(request):
                 title=curr_task.title,
                 desc=curr_task.desc,
                 complete=False,
+                working=False,
                 user=user,
                 board_id=curr_task.board_id,
                 ip_address=curr_task.ip_address
@@ -62,12 +68,24 @@ def home(request):
             tsk.save()
 
         objs = Task.objects.filter(user=user)
-        context = {'tasks':objs,'user':user}
-        return render(request, "index.html", context)
+        all_objs = Task.objects.all()
+        print('2222', all_objs)
+        if user.is_superuser == True:
+            context = {'tasks':all_objs,'user':user}
+            return render(request, "index.html", context)
+        else:
+            context = {'tasks':objs,'user':user}
+            return render(request, "index.html", context)
     
     objs = Task.objects.filter(user=user)
     context = {'tasks':objs,'user':user}
-    return render(request, "index.html", context)
+    all_objs = Task.objects.all()
+    print('outsideeeee = ', all_objs)
+    if user.is_superuser == True:
+        context = {'tasks':all_objs,'user':user}
+        return render(request, "index.html", context)
+    else:
+        return render(request, "index.html", context)
 
 
 @login_required(login_url="login")
@@ -114,13 +132,11 @@ def login(request):
         name = request.POST["username"]
         pas = request.POST["password"]
         user = authenticate(request,username=name,password=pas)
-        print(user)
 
         # checking if user exist and credentials are correct
         if user is not None:
             if user.is_staff:
                 auth.login(request, user)
-                print(user, request )
                 return redirect(home)
                 # return render(request, "index.html")
             else:

@@ -8,6 +8,6 @@ urlpatterns = [
     path("logout", views.logout, name="logout"),
     path("help", views.go, name="help"),
 	path('update_task/<str:pk>/', views.updateTask, name="update_task"),
-    path('startbtn/', views.startbtn, name="startbtn"),
-    path('stopbtn/', views.stopbtn, name="stopbtn"),
+    path('startbtn/<str:pk>/<str:id>', views.startbtn, name="startbtn"),
+    path('stopbtn/<str:pk>/<str:id>', views.stopbtn, name="stopbtn"),
 ]

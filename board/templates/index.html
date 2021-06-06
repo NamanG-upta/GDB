@@ -96,9 +96,9 @@
             }
 
             .third{
-                text-align: right;
+                /* text-align: right;
                 padding: 0px 0px;
-                margin: 8px 42px;
+                margin: 8px 42px; */
                 color:blue;
             }
             
@@ -121,14 +121,14 @@
 
             .device-id{
                 display:flex;
-                justify-content: center;
-                align-items: right;
+                /* justify-content: center; */
+                /* align-items  : right; */
             }
 
             .stbtn{
                 display: flex;
-                justify-content: center;
-                align-items: center;
+                /* justify-content: center;
+                align-items: center; */
             }
 
              #start{
@@ -139,7 +139,10 @@
             #stop{
                  padding: 12px 21px;
             } 
-
+            
+            h5{
+                color: red;
+            }
 
         </style>
     </head>
@@ -153,39 +156,61 @@
     <div class="todo-list">
 
         {% for task in tasks %}
-            <div class="card" style="width: 40rem;">
-                <div class="card-body">
+            <div class="card" style="width: 22rem;">
+                <div class="card-body" style="padding: 24px 25px;">
                     <h5 class="card-title">{{task.title}}</h5>
                     <p class="card-text">{{task.desc}}</p>
+                    <h5 class="card-title">User: {{task.user.username}}</h5>
                         <div class="stbtn">
-                            <form method="POST" action="{% url 'startbtn' %}">
+                            <form method="POST" action="{% url 'startbtn' task.id task.user.id %}">
                                 {% csrf_token %}
-                                <button id="start" type="submit" class="btn btn-outline-success">Start</button>
+                                {% if task.working == False %}
+                                    <h5> Board Available!</h5>
+                                {% else %}
+                                    <h5> Board is under use!</h5>
+                                {% endif %}
+                                {% if user.is_superuser %}
+                                    <button id="start" type="submit" class="btn btn-outline-success">Start</button>
+                                {% endif %}
                             </form>
-                            <form method="POST" action="{% url 'stopbtn' %}">
-                                {% csrf_token %}
-                                <button id="stop" type="submit" class="btn btn-outline-danger">Stop</button>
-                            </form>
-                        </div>
-                    <a class="btn btn-outline-primary" href="{% url 'update_task' task.id %}">INFO</a>
-                </div>
-
-                {% if task.complete == False %}
-                    <div class="f">
-                        <button class = "first"></button>
-                    </div>
-                {% else %}
-                    <div class="device-id">
-                        <div class="f">
-                            <button class = "second"></button>
-                            <p class="third"><strong> Device Id = {{task.board_id}} </strong> </p>
+                            <div style="margin-top: 13px;">
+                                <form method="POST" action="{% url 'stopbtn' task.id task.user.id %}">
+                                    {% csrf_token %}
+                                    <br>
+                                    {% if user.is_superuser %}
+                                        <button id="stop" type="submit" class="btn btn-outline-danger">Stop</button>
+                                    {% endif %}
+                                </form>
+                            </div>
                         </div>
                         <br>
-                        <div class="f1">
-                            <p class="third"> <strong> IP ADDRESS = {{task.ip_address}} </strong> </p>
+                    <a class="btn btn-outline-primary" href="{% url 'update_task' task.id %}">INFO</a>
+                <!-- </div> -->
+                <br><br>    
+
+                    {% if task.complete == False %}
+                        <div class="f">
+                            <button class = "first"></button>
                         </div>
-                    </div>
-                {% endif %} 
+                    {% else %}
+                    <button class = "second"></button>
+                        <div class="device-id">
+                            <div class="f">
+                                <!-- <button class = "second"></button> -->
+                                <p class="third"><strong> Device Id = {{task.board_id}} </strong> </p>
+                            </div>
+                            <!-- <br> -->
+                            <!-- <div class="f1">
+                                <p class="third"> <strong> IP ADDRESS = {{task.ip_address}} </strong> </p>
+                            </div> -->
+                        </div>
+                        <div class="device-id">
+                            <div class="f1">
+                                <p class="third"> <strong> IP ADDRESS = {{task.ip_address}} </strong> </p>
+                            </div>
+                        </div>
+                    {% endif %} 
+                </div>
             </div>
             <br>
         {% endfor %}

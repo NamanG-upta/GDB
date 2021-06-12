@@ -23,7 +23,7 @@
 		<h1 class="heading"><strong> See Device Id and IP Address </strong></h1>
 		<br>
 		<div class="first" >
-		<form method="POST" action="">
+		<form method="POST" action="{% url 'update_task' task.id task.user.id %}">
 			{% csrf_token %}
 			<input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
 			<button type="submit" class="btn btn-outline-success">Submit</button>

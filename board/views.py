@@ -10,14 +10,16 @@ import os
 
 
 @login_required(login_url="login")
-def updateTask(request, pk):
-    user = User.objects.get(id=request.user.id)
-    task = Task.objects.get(id=pk,user=user)
+def updateTask(request, pk,id):
+    print("inside here")
+    # user = User.objects.get(id=request.user.id)
+    task = Task.objects.get(id=pk,user__id=id)
 
     if request.method == 'POST':
-        task = Task.objects.get(id=pk,user=user)
+        task = Task.objects.get(id=pk,user__id=id)
         task.complete = True
         task.save()
+        startbtn(request,pk,id)
         return redirect(home)
 
     return render(request, 'update_task.html', {'task':task} )
@@ -30,9 +32,8 @@ def startbtn(request,pk,id):
     task = Task.objects.get(id=pk,user=user)
     task.working = True
     task.save()
-    # os.system('cmd /k "dir"')
-    os.system('cmd /k "cd c:\ST\STM32CubeIDE_1.6.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_1.6.0.202101291314\tools\bin&&ST-LINK_gdbserver.exe -d -v -cp "c:\ST\STM32CubeIDE_1.6.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_1.6.0.202101291314\tools\bin""')
 
+    os.system('cmd /k "cd c:\ST\STM32CubeIDE_1.6.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_1.6.0.202101291314&& cd tools&& cd bin&&ST-LINK_gdbserver.exe -d -p 61235 -v -cp "C:\ST\STM32CubeIDE_1.6.1\STM32CubeIDE\plugins\myprog\/tools\/bin""')
 
     return redirect(home)
 
@@ -140,7 +141,7 @@ def login(request):
                 return redirect(home)
                 # return render(request, "index.html")
             else:
-                return render(request, "home.html", {"error": "You are not allowed to login, Please ask admin"})
+                return render(request, "home.html", {"error": "Your request is under approval"})
         else:
             return render(request, "home.html", {"error": "Invalid Credentials"})
     else:

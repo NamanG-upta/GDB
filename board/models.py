@@ -28,7 +28,7 @@ class Task(models.Model):
 	complete = models.BooleanField(default=False)
 	working = models.BooleanField(default=False)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	board_id = models.CharField(max_length=20, blank=True, null=True)
+	board_id = models.CharField(max_length=200, blank=True, null=True)
 	ip_address = models.CharField(max_length=200,blank=True, null=True) 
 	created = models.DateTimeField(auto_now_add=True)
 
